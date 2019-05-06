@@ -331,16 +331,16 @@ Default: ``0``
 
 Scope: ``scrapy.spidermiddlewares.depth.DepthMiddleware``
 
-An integer that is used to adjust the request priority based on its depth:
+An integer that is used to adjust the :attr:`~scrapy.http.Request.priority` of
+a :class:`~scrapy.http.Request` based on its depth.
 
-- if zero (default), no priority adjustment is made from depth
-- **a positive value will decrease the priority, i.e. higher depth
-  requests will be processed later** ; this is commonly used when doing
-  breadth-first crawls (BFO)
-- a negative value will increase priority, i.e., higher depth requests
-  will be processed sooner (DFO)
+The priority of a request is adjusted as follows::
 
-See also: :ref:`faq-bfo-dfo` about tuning Scrapy for BFO or DFO.
+    request.priority = request.priority - ( depth * DEPTH_PRIORITY )
+
+As depth increases, positive values of ``DEPTH_PRIORITY`` decrease request
+priority (BFO), while negative values increase request priority (DFO). See
+also :ref:`faq-bfo-dfo`.
 
 .. note::
 
@@ -599,7 +599,7 @@ The amount of time (in secs) that the downloader will wait before timing out.
 DOWNLOAD_MAXSIZE
 ----------------
 
-Default: `1073741824` (1024MB)
+Default: ``1073741824`` (1024MB)
 
 The maximum response size (in bytes) that downloader will download.
 
@@ -620,7 +620,7 @@ If you want to disable it set to 0.
 DOWNLOAD_WARNSIZE
 -----------------
 
-Default: `33554432` (32MB)
+Default: ``33554432`` (32MB)
 
 The response size (in bytes) that downloader will start to warn.
 
@@ -897,6 +897,16 @@ Default: ``False``
 If ``True``, the logs will just contain the root path. If it is set to ``False``
 then it displays the component responsible for the log output
 
+.. setting:: LOGSTATS_INTERVAL
+
+LOGSTATS_INTERVAL
+-----------------
+
+Default: ``60.0``
+
+The interval (in seconds) between each logging printout of the stats 
+by :class:`~extensions.logstats.LogStats`.
+
 .. setting:: MEMDEBUG_ENABLED
 
 MEMDEBUG_ENABLED
@@ -1155,9 +1165,14 @@ Type of in-memory queue used by scheduler. Other available type is:
 
 SCHEDULER_PRIORITY_QUEUE
 ------------------------
-Default: ``'queuelib.PriorityQueue'``
+Default: ``'scrapy.pqueues.ScrapyPriorityQueue'``
 
-Type of priority queue used by scheduler.
+Type of priority queue used by the scheduler. Another available type is
+``scrapy.pqueues.DownloaderAwarePriorityQueue``.
+``scrapy.pqueues.DownloaderAwarePriorityQueue`` works better than
+``scrapy.pqueues.ScrapyPriorityQueue`` when you crawl many different
+domains in parallel. But currently ``scrapy.pqueues.DownloaderAwarePriorityQueue``
+does not work together with :setting:`CONCURRENT_REQUESTS_PER_IP`.
 
 .. setting:: SPIDER_CONTRACTS
 

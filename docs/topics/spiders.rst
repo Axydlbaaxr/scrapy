@@ -129,7 +129,7 @@ scrapy.Spider
 
        You probably won't need to override this directly because the default
        implementation acts as a proxy to the :meth:`__init__` method, calling
-       it with the given arguments `args` and named arguments `kwargs`.
+       it with the given arguments ``args`` and named arguments ``kwargs``.
 
        Nonetheless, this method sets the :attr:`crawler` and :attr:`settings`
        attributes in the new instance so they can be accessed later inside the
@@ -190,7 +190,7 @@ scrapy.Spider
    .. method:: log(message, [level, component])
 
        Wrapper that sends a log message through the Spider's :attr:`logger`,
-       kept for backwards compatibility. For more information see
+       kept for backward compatibility. For more information see
        :ref:`topics-logging-from-spiders`.
 
    .. method:: closed(reason)
@@ -298,13 +298,13 @@ The above example can also be written as follows::
 
 Keep in mind that spider arguments are only strings.
 The spider will not do any parsing on its own.
-If you were to set the `start_urls` attribute from the command line,
+If you were to set the ``start_urls`` attribute from the command line,
 you would have to parse it on your own into a list
 using something like
 `ast.literal_eval <https://docs.python.org/library/ast.html#ast.literal_eval>`_
 or `json.loads <https://docs.python.org/library/json.html#json.loads>`_
 and then set it as an attribute.
-Otherwise, you would cause iteration over a `start_urls` string
+Otherwise, you would cause iteration over a ``start_urls`` string
 (a very common python pitfall)
 resulting in each character being seen as a separate url.
 
@@ -402,10 +402,12 @@ Crawling rules
    of links extracted from each response using the specified ``link_extractor``.
    This is mainly used for filtering purposes.
 
-   ``process_request`` is a callable, or a string (in which case a method from
-   the spider object with that name will be used) which will be called with
-   every request extracted by this rule, and must return a request or None (to
-   filter out the request).
+   ``process_request`` is a callable (or a string, in which case a method from
+   the spider object with that name will be used) which will be called for every
+   :class:`~scrapy.http.Request` extracted by this rule. This callable should
+   take said request as first argument and the :class:`~scrapy.http.Response`
+   from which the request originated as second argument. It must return a
+   ``Request`` object or ``None`` (to filter out the request).
 
 CrawlSpider example
 ~~~~~~~~~~~~~~~~~~~
